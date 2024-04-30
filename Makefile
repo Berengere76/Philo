@@ -5,7 +5,7 @@ RM := rm -f
 
 CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=thread
 
-SOURCE := main.c utils.c init.c
+SOURCE := main.c utils.c init.c dinner.c
 OBJ 	= $(SOURCE:.c=.o)
 
 all: $(NAME)

@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:23:32 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/22 17:02:32 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 16:41:03 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,35 @@ void	parse_input(t_table *table, char **argv)
 		table->nbr_limit_meals = -1;
 }
 
+void	assign_forks(t_philo *philo, t_fork *forks, int philo_position)
+{
+	int	philo_nbr;
+
+	philo_nbr = philo->table->philo_nbr;
+	philo->first_fork = &forks[(philo_position + 1) % philo_nbr];
+	philo->second_fork = &forks[philo_position];
+	if (philo->id % 2 == 0)
+	{
+		philo->first_fork = &forks[philo_position];
+		philo->second_fork = &forks[(philo_position + 1) % philo_nbr];
+	}
+}
+
 void	philo_init(t_table *table)
 {
-	
+	t_philo	*philo;
+	int		i;
+
+	i = -1;
+	while (++i < table->philo_nbr)
+	{
+		philo = table->philos + i;
+		philo->id = i + 1;
+		philo->full = false;
+		philo->meals_counter = 0;
+		philo->table = table;
+		assign_forks(philo, table->forks, i);
+	}
 }
 
 void	data_init(t_table *table)

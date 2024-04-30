@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/22 17:03:38 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 16:53:34 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ typedef struct s_philo
 	long		meals_counter;
 	bool		full;
 	long		last_meal_time;
-	t_fork		*right_fork;
-	t_fork		*left_fork;
+	t_fork		*first_fork;
+	t_fork		*second_fork;
 	pthread_t	thread_id;
 	t_table		*table;
 }	t_philo;
@@ -76,9 +76,14 @@ long	ft_atol(char *nptr);
 int		ft_isdigit(int c);
 
 /* init.c */
-void	philo_init(t_table *table);
 void	parse_input(t_table *table, char **argv);
+void	assign_forks(t_philo *philo, t_fork *forks, int position);
+void	philo_init(t_table *table);
 void	data_init(t_table *table);
+
+/* dinner.c */
+void	*dinner_simulation(void *data);
+void	dinner_start(t_table *table);
 
 /* main.c */
 int		check_digit(char **str);
