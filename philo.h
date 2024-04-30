@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 17:03:50 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 18:25:18 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_table
 	long		nbr_limit_meals;
 	long		start_simulation;
 	bool		end_simulation;
+	bool		all_threads_ready;
 	t_fork		*forks;
 	t_philo		*philos;
 	pthread_mutex_t	table_mutex;
@@ -75,6 +76,7 @@ typedef struct s_table
 /* utils .c */
 long	ft_atol(char *nptr);
 int		ft_isdigit(int c);
+void	wait_all_threads(t_table *table);
 
 /* init.c */
 void	parse_input(t_table *table, char **argv);
@@ -85,6 +87,13 @@ void	data_init(t_table *table);
 /* dinner.c */
 void	*dinner_simulation(void *data);
 void	dinner_start(t_table *table);
+
+/* mtx_handle.c */
+void	set_bool(pthread_mutex_t *mutex, bool *dest, bool value);
+bool	get_bool(pthread_mutex_t *mutex, bool *value);
+void	set_long(pthread_mutex_t *mutex, long *dest, long value);
+bool	get_long(pthread_mutex_t *mutex, long *value);
+bool	simulation_finished(t_table *table);
 
 /* main.c */
 int		check_digit(char **str);
