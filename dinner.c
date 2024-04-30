@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 16:44:14 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 18:40:53 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 18:43:55 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,6 @@ void	dinner_start(t_table *table)
 			pthread_create(table->philos[i].thread_id, NULL, dinner_simulation,
 				&table->philos[i]);
 	}
-	table->start_simulation
+	table->start_simulation = gettime();
 	set_bool(&table->table_mutex, &table->all_threads_ready, true);
 }

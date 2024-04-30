@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 18:25:18 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 18:44:10 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ typedef struct s_table
 /* utils .c */
 long	ft_atol(char *nptr);
 int		ft_isdigit(int c);
+long	gettime(void);
 void	wait_all_threads(t_table *table);
 
 /* init.c */
