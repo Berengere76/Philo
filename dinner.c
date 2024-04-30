@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 16:44:14 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 16:53:06 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 16:59:21 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,13 @@
 
 void	*dinner_simulation(void *data)
 {
+	t_philo	*philo;
+
+	philo = (t_philo *)data;
 	
+	wait_all_threads(philo->table);
+	
+	return (NULL);
 }
 
 void	dinner_start(t_table *table)

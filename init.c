@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:23:32 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 16:41:03 by blebas           ###   ########.fr       */
+/*   Updated: 2024/04/30 17:06:48 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void	data_init(t_table *table)
 	table->end_simulation = false;
 	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
 	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
+	pthread_mutex_init(&table->table_mutex, NULL);
 	while (++i < table->philo_nbr)
 	{
 		pthread_mutex_init(&table->forks[i].fork, NULL);
