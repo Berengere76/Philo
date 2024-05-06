@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 16:44:14 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 18:35:14 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 19:44:17 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ void	eat(t_philo *philo)
 	pthread_mutex_lock(&philo->second_fork->fork);
 	write_status(philo, " has taken a fork\n", GREEN);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime());
-	pthread_mutex_lock(&philo->philo_mutex);
 	philo->meals_counter++;
-	pthread_mutex_unlock(&philo->philo_mutex);
 	write_status(philo, " is eating\n", CYAN);
 	ft_usleep(philo->table->time_to_eat);
 	if (philo->table->nbr_limit_meals > 0
@@ -36,14 +34,12 @@ void	*dinner_simulation(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	wait_all_threads(philo->table);
+	if ((philo->id % 2))
+		usleep(100);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime());
-	pthread_mutex_lock(&philo->table->table_mutex);
-	philo->table->threads_running_nbr++;
-	pthread_mutex_unlock(&philo->table->table_mutex);
 	while (!simulation_finished(philo->table))
 	{
-		if (philo->full)
+		if (get_bool(&philo->philo_mutex, &philo->full))
 			break ;
 		eat(philo);
 		if (simulation_finished(philo->table))
@@ -82,7 +78,6 @@ void	dinner_start(t_table *table)
 		pthread_create(&table->philos[i].thread_id, NULL, dinner_simulation,
 			&table->philos[i]);
 	pthread_create(&table->monitor, NULL, monitor_dinner, table);
-	set_bool(&table->table_mutex, &table->all_threads_ready, true);
 	i = -1;
 	while (++i < table->philo_nbr)
 		pthread_join(table->philos[i].thread_id, NULL);

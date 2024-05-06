@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 18:41:28 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 19:44:06 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ typedef struct s_table
 	long			time_to_sleep;
 	long			nbr_limit_meals;
 	long			start_simulation;
-	long			threads_running_nbr;
 	bool			end_simulation;
-	bool			all_threads_ready;
 	t_fork			*forks;
 	t_philo			*philos;
 	pthread_t		monitor;
