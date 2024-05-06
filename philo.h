@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 18:44:10 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 17:25:18 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,29 +46,33 @@ typedef struct s_fork
 
 typedef struct s_philo
 {
-	int			id;
-	long		meals_counter;
-	bool		full;
-	long		last_meal_time;
-	t_fork		*first_fork;
-	t_fork		*second_fork;
-	pthread_t	thread_id;
-	t_table		*table;
+	int				id;
+	long			meals_counter;
+	bool			full;
+	long			last_meal_time;
+	t_fork			*first_fork;
+	t_fork			*second_fork;
+	pthread_t		thread_id;
+	t_table			*table;
+	pthread_mutex_t	philo_mutex;
 }	t_philo;
 
 typedef struct s_table
 {
-	long		philo_nbr;
-	long		time_to_die;
-	long		time_to_eat;
-	long		time_to_sleep;
-	long		nbr_limit_meals;
-	long		start_simulation;
-	bool		end_simulation;
-	bool		all_threads_ready;
-	t_fork		*forks;
-	t_philo		*philos;
+	long			philo_nbr;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+	long			nbr_limit_meals;
+	long			start_simulation;
+	long			threads_running_nbr;
+	bool			end_simulation;
+	bool			all_threads_ready;
+	t_fork			*forks;
+	t_philo			*philos;
+	pthread_t		monitor;
 	pthread_mutex_t	table_mutex;
+	pthread_mutex_t	write_mutex;
 }	t_table;
 
 /* FONCTIONS */
@@ -77,7 +81,7 @@ typedef struct s_table
 long	ft_atol(char *nptr);
 int		ft_isdigit(int c);
 long	gettime(void);
-void	wait_all_threads(t_table *table);
+void	ft_usleep(int ms);
 
 /* init.c */
 void	parse_input(t_table *table, char **argv);
@@ -86,6 +90,7 @@ void	philo_init(t_table *table);
 void	data_init(t_table *table);
 
 /* dinner.c */
+void	eat(t_philo *philo);
 void	*dinner_simulation(void *data);
 void	dinner_start(t_table *table);
 
@@ -96,9 +101,16 @@ void	set_long(pthread_mutex_t *mutex, long *dest, long value);
 bool	get_long(pthread_mutex_t *mutex, long *value);
 bool	simulation_finished(t_table *table);
 
+/* monitor.c */
+void	*monitor_dinner(void *data);
+
+/* synch_utils.c */
+void	wait_all_threads(t_table *table);
+bool	all_threads_run(pthread_mutex_t *mutex, long *threads, long philo_nbr);
+void	write_status(t_philo *philo, char *str, char *color);
+
 /* main.c */
 int		check_digit(char **str);
-int		check_input(int argc, char **argv);
 int		check_args(int argc, char **argv);
 int		main(int argc, char **argv);
 

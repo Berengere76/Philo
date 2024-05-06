@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:07:23 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/22 15:44:19 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 16:30:20 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,11 @@ int	check_digit(char **str)
 	return (0);
 }
 
-int	check_input(int argc, char **argv)
+int	check_args(int argc, char **argv)
 {
 	int	i;
 
-	i = 1;
-	while (i < argc)
-	{
-		if (ft_atol(argv[i]) > INT_MAX)
-		{
-			printf("%sNO DIGIT SUPERIOR TO INT MAX PLZ%s\n", RED, NC);
-			return (1);
-		}
-		if (argv[i] == '-')
-		{
-			printf("%sOnly positive plzzzz%s\n", RED, NC);
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
-
-int	check_args(int argc, char **argv)
-{
+	i = 0;
 	if (argc < 5 || argc > 6)
 	{
 		printf("%sError, invalid input%s\n", RED, NC);
@@ -63,11 +44,18 @@ int	check_args(int argc, char **argv)
 	}
 	if (check_digit(argv))
 	{
-		printf("%sOnly digit plzzz%s\n", RED, NC);
+		printf("%sOnly digit or positiv nbr plzzz%s\n", RED, NC);
 		return (1);
 	}
-	if (check_input(argc, argv))
-		return (1);
+	while (i < argc)
+	{
+		if (ft_atol(argv[i]) > INT_MAX)
+		{
+			printf("%sNO DIGIT SUPERIOR TO INT MAX PLZ%s\n", RED, NC);
+			return (1);
+		}
+		i++;
+	}
 	return (0);
 }
 
@@ -80,7 +68,7 @@ int	main(int argc, char **argv)
 		parse_input(&table, argv);
 		data_init(&table);
 		dinner_start(&table);
-		clean(&table);
+		//clean(&table);
 	}
 	return (0);
 }

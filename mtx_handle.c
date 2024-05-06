@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 17:51:35 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 18:02:30 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 15:06:47 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,5 @@ bool	get_long(pthread_mutex_t *mutex, long *value)
 
 bool	simulation_finished(t_table *table)
 {
-	return (get_bool(&table->table_mutex, table->end_simulation));
+	return (get_bool(&table->table_mutex, &table->end_simulation));
 }

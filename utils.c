@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:10:56 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 18:36:50 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 16:09:34 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,11 @@ long	gettime(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	wait_all_threads(t_table *table)
+void	ft_usleep(int ms)
 {
-	while (!get_bool(&table->table_mutex, &table->all_threads_ready))
+	long int	time;
+
+	time = gettime();
+	while (gettime() - time < ms)
+		usleep(ms / 10);
 }

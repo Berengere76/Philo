@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:23:32 by blebas            #+#    #+#             */
-/*   Updated: 2024/04/30 17:06:48 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 16:15:43 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void	philo_init(t_table *table)
 		philo->full = false;
 		philo->meals_counter = 0;
 		philo->table = table;
+		philo->last_meal_time = 0;
+		pthread_mutex_init(&philo->philo_mutex, NULL);
 		assign_forks(philo, table->forks, i);
 	}
 }
@@ -61,9 +63,12 @@ void	data_init(t_table *table)
 
 	i = -1;
 	table->end_simulation = false;
+	table->all_threads_ready = false;
+	table->threads_running_nbr = 0;
 	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
 	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
 	pthread_mutex_init(&table->table_mutex, NULL);
+	pthread_mutex_init(&table->write_mutex, NULL);
 	while (++i < table->philo_nbr)
 	{
 		pthread_mutex_init(&table->forks[i].fork, NULL);
