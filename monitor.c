@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 16:04:42 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 17:11:24 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 18:41:14 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ void	*monitor_dinner(void *data)
 	table = (t_table *)data;
 	while (!all_threads_run(&table->table_mutex,
 			&table->threads_running_nbr, table->philo_nbr))
-	{
-
-	}
+		;
 	while (!simulation_finished(table))
 	{
 		i = -1;
@@ -45,7 +43,7 @@ void	*monitor_dinner(void *data)
 			if (philo_died(table->philos + i))
 			{
 				set_bool(&table->table_mutex, &table->end_simulation, true);
-				write_status(table->philos, " died\n", RED);
+				write_dead_status(table->philos, " died\n", RED);
 			}
 		}
 	}

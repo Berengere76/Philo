@@ -25,3 +25,6 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+#--tool=helgrind
+#--tool=drd

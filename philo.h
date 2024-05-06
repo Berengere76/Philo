@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 15:10:16 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 17:25:18 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 18:41:28 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,13 @@ bool	get_long(pthread_mutex_t *mutex, long *value);
 bool	simulation_finished(t_table *table);
 
 /* monitor.c */
+bool	philo_died(t_philo *philo);
 void	*monitor_dinner(void *data);
 
 /* synch_utils.c */
 void	wait_all_threads(t_table *table);
 bool	all_threads_run(pthread_mutex_t *mutex, long *threads, long philo_nbr);
+void	write_dead_status(t_philo *philo, char *str, char *color);
 void	write_status(t_philo *philo, char *str, char *color);
 
 /* main.c */

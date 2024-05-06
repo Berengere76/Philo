@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 14:29:36 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 17:12:06 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/06 18:40:59 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,25 @@ bool	all_threads_run(pthread_mutex_t *mutex, long *threads, long philo_nbr)
 	return (ret);
 }
 
-void	write_status(t_philo *philo, char *str, char *color)
+void	write_dead_status(t_philo *philo, char *str, char *color)
 {
-	if (philo->full)
-		return ;
 	pthread_mutex_lock(&philo->table->write_mutex);
 	printf("%s%ld%s %s%d%s%s", YELLOW, gettime()
 		- philo->table->start_simulation, NC, color, philo->id, str, NC);
 	pthread_mutex_unlock(&philo->table->write_mutex);
+}
+
+void	write_status(t_philo *philo, char *str, char *color)
+{
+	pthread_mutex_lock(&philo->table->write_mutex);
+	if (philo->full)
+		return ;
+	if (!simulation_finished(philo->table))
+	{
+		printf("%s%ld%s %s%d%s%s", YELLOW, gettime()
+			- philo->table->start_simulation, NC, color, philo->id, str, NC);
+		pthread_mutex_unlock(&philo->table->write_mutex);
+	}
+	else
+		pthread_mutex_unlock(&philo->table->write_mutex);
 }
