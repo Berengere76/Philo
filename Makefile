@@ -3,7 +3,7 @@ NAME := philo
 CC := cc
 RM := rm -f
 
-CFLAGS	= -Wall -Wextra -Werror -pthread #-fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread
 
 SOURCE := main.c utils.c init.c dinner.c mtx_handle.c synch_utils.c monitor.c
 OBJ 	= $(SOURCE:.c=.o)
