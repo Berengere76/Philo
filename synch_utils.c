@@ -6,23 +6,11 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 14:29:36 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 19:38:54 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/07 12:24:30 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-bool	all_threads_run(pthread_mutex_t *mutex, long *threads, long philo_nbr)
-{
-	bool	ret;
-
-	ret = false;
-	pthread_mutex_lock(mutex);
-	if (*threads == philo_nbr)
-		ret = true;
-	pthread_mutex_unlock(mutex);
-	return (ret);
-}
 
 void	write_dead_status(t_philo *philo, char *str, char *color)
 {

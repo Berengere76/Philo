@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 16:04:42 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 19:51:42 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/07 12:27:14 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ bool	philo_died(t_philo *philo)
 
 	if (philo->full)
 		return (false);
-	// if (get_bool(&philo->philo_mutex, &philo->full))
-	// 	return (false);
 	pthread_mutex_lock(&philo->philo_mutex);
 	elapsed = gettime() - philo->last_meal_time;
 	t_to_die = philo->table->time_to_die;
@@ -43,7 +41,7 @@ void	*monitor_dinner(void *data)
 		{
 			if (philo_died(table->philos + i))
 			{
-				set_bool(&table->table_mutex, &table->end_simulation, true);
+				table->end_simulation = true;
 				write_dead_status(table->philos, " died\n", RED);
 			}
 		}

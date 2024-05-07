@@ -6,7 +6,7 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 16:44:14 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 19:44:17 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/07 12:24:51 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	eat(t_philo *philo)
 	ft_usleep(philo->table->time_to_eat);
 	if (philo->table->nbr_limit_meals > 0
 		&& philo->meals_counter == philo->table->nbr_limit_meals)
-		set_bool(&philo->philo_mutex, &philo->full, true);
+		philo->full = true;
 	pthread_mutex_unlock(&philo->first_fork->fork);
 	pthread_mutex_unlock(&philo->second_fork->fork);
 }
@@ -34,12 +34,10 @@ void	*dinner_simulation(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	if ((philo->id % 2))
-		usleep(100);
 	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime());
 	while (!simulation_finished(philo->table))
 	{
-		if (get_bool(&philo->philo_mutex, &philo->full))
+		if (philo->full)
 			break ;
 		eat(philo);
 		if (simulation_finished(philo->table))
