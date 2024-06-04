@@ -1,11 +1,11 @@
-NAME := philo
 
-CC := cc
-RM := rm -f
+NAME = philo
+CC = cc
+RM = rm -rf
+CFLAGS = -Wall -Wextra -Werror -pthread #-fsanitize=thread
 
-CFLAGS	= -Wall -Wextra -Werror -pthread -fsanitize=thread
+SOURCE =	init.c utils.c utils2.c philo.c monitor.c dinner.c dinner2.c routine.c main.c get_set.c get_set2.c
 
-SOURCE := main.c utils.c init.c dinner.c mtx_handle.c synch_utils.c monitor.c
 OBJ 	= $(SOURCE:.c=.o)
 
 all: $(NAME)
@@ -26,5 +26,4 @@ re: fclean all
 
 .PHONY: all clean fclean re
 
-#--tool=helgrind
-#--tool=drd
+#-g #-fsanitize=thread

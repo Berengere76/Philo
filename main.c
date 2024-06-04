@@ -6,11 +6,21 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:07:23 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 16:30:20 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/10 09:33:58 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
 
 int	check_digit(char **str)
 {
@@ -18,6 +28,8 @@ int	check_digit(char **str)
 	int	j;
 
 	i = 1;
+	if (ft_strlen(str[i]) > 10)
+		return (1);
 	while (str[i])
 	{
 		j = 0;
@@ -44,14 +56,14 @@ int	check_args(int argc, char **argv)
 	}
 	if (check_digit(argv))
 	{
-		printf("%sOnly digit or positiv nbr plzzz%s\n", RED, NC);
+		printf("%sError, invalid input%s\n", RED, NC);
 		return (1);
 	}
 	while (i < argc)
 	{
 		if (ft_atol(argv[i]) > INT_MAX)
 		{
-			printf("%sNO DIGIT SUPERIOR TO INT MAX PLZ%s\n", RED, NC);
+			printf("%sError, invalid input%s\n", RED, NC);
 			return (1);
 		}
 		i++;
@@ -61,14 +73,10 @@ int	check_args(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_table	table;
-
-	if (!check_args(argc, argv))
+	if (!check_args(argc, argv) && !check_args(argc, argv))
 	{
-		parse_input(&table, argv);
-		data_init(&table);
-		dinner_start(&table);
-		//clean(&table);
+		if (philosophers(argc, argv) != 0)
+			return (MALLOC_ERROR);
 	}
 	return (0);
 }

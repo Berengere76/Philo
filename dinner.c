@@ -6,79 +6,46 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/30 16:44:14 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/07 12:24:51 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/08 16:08:06 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	eat(t_philo *philo)
+void	drop_forks(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->first_fork->fork);
-	write_status(philo, " has taken a fork\n", GREEN);
-	pthread_mutex_lock(&philo->second_fork->fork);
-	write_status(philo, " has taken a fork\n", GREEN);
-	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime());
-	philo->meals_counter++;
-	write_status(philo, " is eating\n", CYAN);
-	ft_usleep(philo->table->time_to_eat);
-	if (philo->table->nbr_limit_meals > 0
-		&& philo->meals_counter == philo->table->nbr_limit_meals)
-		philo->full = true;
-	pthread_mutex_unlock(&philo->first_fork->fork);
-	pthread_mutex_unlock(&philo->second_fork->fork);
+	pthread_mutex_unlock(philo->left_f);
+	pthread_mutex_unlock(philo->right_f);
 }
 
-void	*dinner_simulation(void *data)
+void	update_last_meal_time(t_philo *philo)
 {
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	set_long(&philo->philo_mutex, &philo->last_meal_time, gettime());
-	while (!simulation_finished(philo->table))
-	{
-		if (philo->full)
-			break ;
-		eat(philo);
-		if (simulation_finished(philo->table))
-			break ;
-		write_status(philo, " is sleeping\n", BLUE);
-		ft_usleep(philo->table->time_to_sleep);
-		write_status(philo, " is thinking\n", PURPLE);
-	}
-	return (NULL);
+	pthread_mutex_lock(&philo->mut_last_eat_time);
+	philo->last_eat_time = gettime();
+	pthread_mutex_unlock(&philo->mut_last_eat_time);
 }
 
-void	lone_philo(t_philo	*philo)
+void	update_nb_meals_had(t_philo *philo)
 {
-	printf("%s%li 1 has taken a fork%s\n", GREEN,
-		gettime() - philo->table->start_simulation, NC);
-	ft_usleep(philo->table->time_to_die);
-	printf("%s%li 1 died%s\n", RED, philo->table->time_to_die, NC);
+	pthread_mutex_lock(&philo->mut_nb_meals_had);
+	philo->nb_meals_had++;
+	pthread_mutex_unlock(&philo->mut_nb_meals_had);
 }
 
-void	dinner_start(t_table *table)
+void	sleep_for_eating(t_philo *philo)
 {
-	int	i;
+	ft_usleep(get_eat_time(philo->data));
+}
 
-	i = -1;
-	table->start_simulation = gettime();
-	if (table->philo_nbr == 0)
-		return ;
-	if (table->nbr_limit_meals == 0)
-		return ;
-	if (table->philo_nbr == 1)
-	{
-		lone_philo(table->philos);
-		return ;
-	}
-	while (++i < table->philo_nbr)
-		pthread_create(&table->philos[i].thread_id, NULL, dinner_simulation,
-			&table->philos[i]);
-	pthread_create(&table->monitor, NULL, monitor_dinner, table);
-	i = -1;
-	while (++i < table->philo_nbr)
-		pthread_join(table->philos[i].thread_id, NULL);
-	set_bool(&table->table_mutex, &table->end_simulation, true);
-	pthread_join(table->monitor, NULL);
+int	eat(t_philo *philo)
+{
+	if (take_forks(philo) != 0)
+		return (1);
+	set_philo_state(philo, EATING);
+	print_msg(philo->data, philo->id, EAT, CYAN);
+	update_last_meal_time(philo);
+	sleep_for_eating(philo);
+	update_nb_meals_had(philo);
+	drop_forks(philo);
+	return (0);
 }

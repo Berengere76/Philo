@@ -6,71 +6,84 @@
 /*   By: blebas <blebas@student.42lehavre.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 15:23:32 by blebas            #+#    #+#             */
-/*   Updated: 2024/05/06 19:44:31 by blebas           ###   ########.fr       */
+/*   Updated: 2024/05/08 16:19:35 by blebas           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	parse_input(t_table *table, char **argv)
+int	init_forks(t_data *data)
 {
-	table->philo_nbr = ft_atol(argv[1]);
-	table->time_to_die = ft_atol(argv[2]);
-	table->time_to_eat = ft_atol(argv[3]);
-	table->time_to_sleep = ft_atol(argv[4]);
-	if (argv[5])
-		table->nbr_limit_meals = ft_atol(argv[5]);
-	else
-		table->nbr_limit_meals = -1;
-}
+	int		i;
+	t_philo	*philos;
 
-void	assign_forks(t_philo *philo, t_fork *forks, int philo_position)
-{
-	int	philo_nbr;
-
-	philo_nbr = philo->table->philo_nbr;
-	philo->first_fork = &forks[(philo_position + 1) % philo_nbr];
-	philo->second_fork = &forks[philo_position];
-	if (philo->id % 2 == 0)
+	philos = data->philos;
+	i = -1;
+	while (++i < data->nb_philos)
+		pthread_mutex_init(&data->forks[i], NULL);
+	i = 0;
+	philos[0].left_f = &data->forks[0];
+	philos[0].right_f = &data->forks[data->nb_philos - 1];
+	while (++i < data->nb_philos)
 	{
-		philo->first_fork = &forks[philo_position];
-		philo->second_fork = &forks[(philo_position + 1) % philo_nbr];
+		philos[i].left_f = &data->forks[i];
+		philos[i].right_f = &data->forks[i - 1];
 	}
+	return (0);
 }
 
-void	philo_init(t_table *table)
+int	init_philos(t_data *data)
 {
-	t_philo	*philo;
+	t_philo	*philos;
 	int		i;
 
 	i = -1;
-	while (++i < table->philo_nbr)
+	philos = data->philos;
+	while (++i < data->nb_philos)
 	{
-		philo = table->philos + i;
-		philo->id = i + 1;
-		philo->full = false;
-		philo->meals_counter = 0;
-		philo->table = table;
-		philo->last_meal_time = 0;
-		pthread_mutex_init(&philo->philo_mutex, NULL);
-		assign_forks(philo, table->forks, i);
+		philos[i].data = data;
+		philos[i].id = i + 1;
+		philos[i].nb_meals_had = 0;
+		philos[i].state = IDLE;
+		pthread_mutex_init(&philos[i].mut_state, NULL);
+		pthread_mutex_init(&philos[i].mut_nb_meals_had, NULL);
+		pthread_mutex_init(&philos[i].mut_last_eat_time, NULL);
+		update_last_meal_time(&philos[i]);
 	}
+	return (0);
 }
 
-void	data_init(t_table *table)
+int	malloc_data(t_data *data)
 {
-	int	i;
+	data->philos = malloc(sizeof(t_philo) * data->nb_philos);
+	if (data->philos == NULL)
+		return (MALLOC_ERROR);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philos);
+	if (data->forks == NULL)
+		return (free(data->philos), MALLOC_ERROR);
+	data->philo_ths = malloc(sizeof(pthread_t) * data->nb_philos);
+	if (data->philo_ths == NULL)
+		return (free(data->philos), free(data->forks), MALLOC_ERROR);
+	return (0);
+}
 
-	i = -1;
-	table->end_simulation = false;
-	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);
-	table->forks = malloc(sizeof(t_fork) * table->philo_nbr);
-	pthread_mutex_init(&table->table_mutex, NULL);
-	pthread_mutex_init(&table->write_mutex, NULL);
-	while (++i < table->philo_nbr)
-	{
-		pthread_mutex_init(&table->forks[i].fork, NULL);
-		table->forks[i].fork_id = i;
-	}
-	philo_init(table);
+int	init_data(t_data *data, int argc, char **argv)
+{
+	data->nb_full_p = 0;
+	data->keep_iterating = true;
+	data->nb_philos = ft_atol(argv[1]);
+	data->die_time = ft_atol(argv[2]);
+	data->eat_time = ft_atol(argv[3]);
+	data->sleep_time = ft_atol(argv[4]);
+	data->nb_meals = -1;
+	if (argc == 6)
+		data->nb_meals = ft_atol(argv[5]);
+	pthread_mutex_init(&data->mut_eat_t, NULL);
+	pthread_mutex_init(&data->mut_sleep_t, NULL);
+	pthread_mutex_init(&data->mut_die_t, NULL);
+	pthread_mutex_init(&data->mut_print, NULL);
+	pthread_mutex_init(&data->mut_nb_philos, NULL);
+	pthread_mutex_init(&data->mut_keep_iter, NULL);
+	pthread_mutex_init(&data->mut_start_time, NULL);
+	return (malloc_data(data));
 }
